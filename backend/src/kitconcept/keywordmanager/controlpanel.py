@@ -9,17 +9,6 @@ from zope.interface import Interface
 class IKeywordManagerSettings(Interface):
     """Keyword Manager settings stored in the backend"""
 
-    manage_keywords_permission = schema.Choice(
-        title=_("Permission"),
-        description=_(
-            "The permission required to manage keywords (via the Keyword Manager, "
-            "the REST-API and the Zope Utility)."
-        ),
-        required=True,
-        default="kitconcept.keywordmanager: Manage Keywords",
-        vocabulary="kitconcept.keywordmanager.vocabularies.permissions",
-    )
-
     directives.widget(
         "ignore_indexes",
         vocabulary="kitconcept.keywordmanager.vocabularies.indexes",

@@ -1,11 +1,10 @@
 from Acquisition import aq_base
-from kitconcept.keywordmanager import PACKAGE_NAME
 from kitconcept.keywordmanager.interfaces import IKeywordManager
+from kitconcept.keywordmanager.utils import check_permission
 from plone import api
 from plone.api.portal import get_registry_record
 from plone.dexterity.interfaces import IDexterityContent
 from Products.CMFCore.indexing import processQueue
-from zExceptions.unauthorized import Unauthorized
 from zope.interface import implementer
 
 
@@ -40,6 +39,7 @@ class KeywordManager:
         )
         return list(idxs)
 
+    @check_permission
     def change(
         self,
         new_keyword: str,
@@ -54,12 +54,6 @@ class KeywordManager:
 
         Returns the number of objects that have been updated.
         """
-        required = get_registry_record(f"{PACKAGE_NAME}.manage_keywords_permission")
-        if not api.user.has_permission(required):
-            raise Unauthorized(
-                "You are missing required permissions to access this resource."
-            )
-
         # #MOD Dynamic field getting
         query = {indexName: old_keywords}
         if context is not None:
@@ -89,17 +83,12 @@ class KeywordManager:
 
         return len(brains)
 
+    @check_permission
     def delete(self, keywords: list, context=None, indexName: str = "Subject") -> int:
         """Removes the keywords from all objects using it.
 
         Returns the number of objects that have been updated.
         """
-        required = get_registry_record(f"{PACKAGE_NAME}.manage_keywords_permission")
-        if not api.user.has_permission(required):
-            raise Unauthorized(
-                "You are missing required permissions to access this resource."
-            )
-
         query = {indexName: keywords}
         if context:
             query["depth"] = 0
@@ -132,6 +121,7 @@ class KeywordManager:
             idxs = self._getFullIndexList(indexName)
             obj.reindexObject(idxs=idxs)
 
+    @check_permission
     def getKeywords(
         self, indexName: str = "Subject", withLengths: bool = False
     ) -> list[str] | list[tuple[str, int]]:
@@ -149,12 +139,6 @@ class KeywordManager:
         Raises:
             ValueError: If indexName is not a valid keyword index.
         """
-        required = get_registry_record(f"{PACKAGE_NAME}.manage_keywords_permission")
-        if not api.user.has_permission(required):
-            raise Unauthorized(
-                "You are missing required permissions to access this resource."
-            )
-
         processQueue()
         if indexName not in self.getKeywordIndexes():
             raise ValueError(f"'{indexName}' is not a valid index")
@@ -184,16 +168,11 @@ class KeywordManager:
 
         return count
 
+    @check_permission
     def getScoredMatches(self, word, possibilities, num, score, context=None):
         """Take a word, compare it to a list of possibilities,
         return max. num matches > score).
         """
-        required = get_registry_record(f"{PACKAGE_NAME}.manage_keywords_permission")
-        if not api.user.has_permission(required):
-            raise Unauthorized(
-                "You are missing required permissions to access this resource."
-            )
-
         if not USE_LEVENSHTEIN:
             # No levenshtein module around. Fall back to difflib
             return difflib.get_close_matches(word, possibilities, num, score)

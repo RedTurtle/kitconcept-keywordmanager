@@ -5,9 +5,4 @@
       component=".indexes.catalog_indexes_vocabulary"
       />
 
-  <utility
-      name="kitconcept.keywordmanager.vocabularies.permissions"
-      component=".permissions.permissions_vocabulary"
-      />
-
 </configure>
