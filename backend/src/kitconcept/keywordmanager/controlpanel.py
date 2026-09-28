@@ -9,24 +9,16 @@ from zope.interface import Interface
 class IKeywordManagerSettings(Interface):
     """Keyword Manager settings stored in the backend"""
 
-    directives.widget(
-        "ignore_indexes",
-        vocabulary="kitconcept.keywordmanager.vocabularies.indexes",
-        frontendOptions={
-            "widgetProps": {"isMulti": True},
-        },
-    )
-
-    ignore_indexes = schema.List(
+    ignore_indexes = schema.TextLine(
         title=_("Ignore indexes"),
         description=_(
             "Indexes of type 'KeywordIndex' that the Keyword Manager shouldn't be able "
             "to manage. These are disallowed intentionally, since managing them could "
-            "cause problems."
+            "cause problems. Provide the values as a comma-separated string, e.g. "
+            '"block_types, object_provides".'
         ),
         required=True,
-        default=["block_types", "object_provides"],
-        value_type=schema.TextLine(),
+        default="block_types, object_provides",
     )
 
     directives.widget(
