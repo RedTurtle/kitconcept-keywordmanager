@@ -16,7 +16,6 @@
   <include file="permissions.zcml" />
 
   <include package=".services" />
-  <include package=".vocabularies" />
 
   <utility factory=".tool.KeywordManager" />
 

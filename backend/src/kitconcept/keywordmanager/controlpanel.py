@@ -29,15 +29,16 @@ class IKeywordManagerSettings(Interface):
         },
     )
 
-    always_reindex = schema.List(
+    always_reindex = schema.TextLine(
         title=_("Always reindex"),
         description=_(
             "Indexes that should always be reindexed when merging or deleting "
-            "keywords on objects. Most users won't need to configure this.",
+            "keywords on objects. Most users won't need to configure this. "
+            'Provide the values as a comma-separated string, e.g. "block_types, '
+            'object_provides".',
         ),
         required=True,
-        default=["SearchableText"],
-        value_type=schema.TextLine(),
+        default="SearchableText",
     )
 
 

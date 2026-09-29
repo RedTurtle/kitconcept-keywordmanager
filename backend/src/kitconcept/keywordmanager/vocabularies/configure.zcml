@@ -1,8 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <utility
-      name="kitconcept.keywordmanager.vocabularies.indexes"
-      component=".indexes.catalog_indexes_vocabulary"
-      />
-
-</configure>

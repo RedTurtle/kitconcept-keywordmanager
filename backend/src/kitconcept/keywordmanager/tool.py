@@ -34,9 +34,12 @@ class KeywordManager:
     manage_options = ({"label": "Overview", "action": "manage_overview"},)
 
     def _getFullIndexList(self, indexName):
-        idxs = {indexName}.union(
-            get_registry_record("kitconcept.keywordmanager.always_reindex")
-        )
+        idxs = {indexName}.union([
+            r.strip()
+            for r in get_registry_record(
+                "kitconcept.keywordmanager.always_reindex"
+            ).split(",")
+        ])
         return list(idxs)
 
     @check_permission
