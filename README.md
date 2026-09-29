@@ -104,46 +104,43 @@ Every content item using an affected keyword is updated automatically.
 
 ## Configuration
 
-This package allows for some configuration.
+This package allows for some configuration through the Keyword Manager Settings controlpanel.
 
-To configure one of the following options, import the config module like so:
+Both the `ignore_index` and the `always_reindex` options are expected to be comma-separated strings.
+
+The `ignore_index` option allows you to exclude indexes of type KeywordIndex from being managable by the Keyword Manager.
+
+To see possible values for the `ignore_index` option, run `make console` from the backend dir of your project & do the following:
 
 ```py
-from kitconcept.keywordmanager import config
+>>> from zope.component.hooks import setSite
+>>> from plone import api
+>>> setSite(app.Plone)
+>>> catalog = api.portal.get_tool("portal_catalog")
+>>> idxs = catalog.index_objects()
+>>> [i.id for i in idxs if i.meta_type == "KeywordIndex"]
 ```
 
-### Options
-
-The keywords permission allows you to set a custom permission who should be able to manage keywords.
+It will return something like this:
 
 ```py
-config.MANAGE_KEYWORDS_PERMISSION = "kitconcept.keywordmanager: Manage Keywords"
+['Subject', 'allowedRolesAndUsers', 'getRawRelatedItems', 'object_provides', 'block_types']
 ```
 
-The meta type of the keyword indexes can be set. This is only useful if you're one of those crazy people that use custom indexes.
+To see possible values for the `always_reindex` option, run `make console` from the backend dir of your project & do the following:
 
 ```py
-config.META_TYPE = "KeywordIndex"
+>>> from zope.component.hooks import setSite
+>>> from plone import api
+>>> setSite(app.Plone)
+>>> catalog = api.portal.get_tool("portal_catalog")
+>>> catalog.indexes()
 ```
 
-There are indexes of `META_TYPE` we know we don't want to manage because bad things will happen. You can exclude those using:
+It will return something like this:
 
 ```py
-config.IGNORE_INDEXES = [
-    "object_provides",
-    "allowedRolesAndUsers",
-    "getRawRelatedItems",
-    "getEventType",
-    "block_types",
-]
-```
-
-You can set a list of indexes that should always be reindex when merging or deleting keywords on objects. Most people won't need this.
-
-```py
-config.ALWAYS_REINDEX = (
-    "SearchableText",
-)
+dict_keys(['Creator', 'Date', 'Description', 'SearchableText', 'Subject', 'Title', 'Type', 'UID', 'allowedRolesAndUsers', 'created', 'effective', 'effectiveRange', 'expires', 'getId', 'getObjPositionInParent', 'getRawRelatedItems', 'id', 'in_reply_to', 'is_default_page', 'is_folderish', 'exclude_from_nav', 'modified', 'object_provides', 'path', 'portal_type', 'review_state', 'sortable_title', 'cmf_uid', 'start', 'end', 'sync_uid', 'block_types'])
 ```
 
 ## REST API
