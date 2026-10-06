@@ -18,7 +18,9 @@ class IKeywordManagerSettings(Interface):
             '"block_types, object_provides".'
         ),
         required=True,
-        default="block_types, object_provides",
+        default=(
+            "block_types, object_provides, getRawRelatedItems, allowedRolesAndUsers"
+        ),
     )
 
     directives.widget(
