@@ -1,8 +1,8 @@
-from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
-from kitconcept.keywordmanager import config
 from kitconcept.keywordmanager.interfaces import IKeywordManager
+from kitconcept.keywordmanager.utils import check_permission
 from plone import api
+from plone.api.portal import get_registry_record
 from plone.dexterity.interfaces import IDexterityContent
 from Products.CMFCore.indexing import processQueue
 from zope.interface import implementer
@@ -31,15 +31,18 @@ except ImportError:
 class KeywordManager:
     """A utility to manage keywords within Plone."""
 
-    security = ClassSecurityInfo()
-
     manage_options = ({"label": "Overview", "action": "manage_overview"},)
 
     def _getFullIndexList(self, indexName):
-        idxs = {indexName}.union(config.ALWAYS_REINDEX)
+        idxs = {indexName}.union([
+            r.strip()
+            for r in get_registry_record(
+                "kitconcept.keywordmanager.always_reindex"
+            ).split(",")
+        ])
         return list(idxs)
 
-    @security.protected(config.MANAGE_KEYWORDS_PERMISSION)
+    @check_permission
     def change(
         self,
         new_keyword: str,
@@ -54,7 +57,6 @@ class KeywordManager:
 
         Returns the number of objects that have been updated.
         """
-
         # #MOD Dynamic field getting
         query = {indexName: old_keywords}
         if context is not None:
@@ -84,7 +86,7 @@ class KeywordManager:
 
         return len(brains)
 
-    @security.protected(config.MANAGE_KEYWORDS_PERMISSION)
+    @check_permission
     def delete(self, keywords: list, context=None, indexName: str = "Subject") -> int:
         """Removes the keywords from all objects using it.
 
@@ -122,7 +124,7 @@ class KeywordManager:
             idxs = self._getFullIndexList(indexName)
             obj.reindexObject(idxs=idxs)
 
-    @security.protected(config.MANAGE_KEYWORDS_PERMISSION)
+    @check_permission
     def getKeywords(
         self, indexName: str = "Subject", withLengths: bool = False
     ) -> list[str] | list[tuple[str, int]]:
@@ -169,7 +171,7 @@ class KeywordManager:
 
         return count
 
-    @security.protected(config.MANAGE_KEYWORDS_PERMISSION)
+    @check_permission
     def getScoredMatches(self, word, possibilities, num, score, context=None):
         """Take a word, compare it to a list of possibilities,
         return max. num matches > score).
@@ -198,21 +200,26 @@ class KeywordManager:
         return [item[1] for item in res[:num]]
 
     def getKeywordIndexes(self) -> list[str]:
-        """Gets a list of indexes from the catalog. Uses config.py to choose the
-        meta type and filters out a subset of known indexes that should not be
+        """Gets a list of indexes from the catalog. Uses registry records to choose
+        the meta type and filters out a subset of known indexes that should not be
         managed.
         """
+        ignore_indexes = [
+            r.strip()
+            for r in get_registry_record(
+                "kitconcept.keywordmanager.ignore_indexes"
+            ).split(",")
+        ]
         catalog = api.portal.get_tool("portal_catalog")
         idxs = catalog.index_objects()
         idxs = [
             i.id
             for i in idxs
-            if i.meta_type == config.META_TYPE and i.id not in config.IGNORE_INDEXES
+            if i.meta_type == "KeywordIndex" and i.id not in ignore_indexes
         ]
         idxs.sort()
         return idxs
 
-    @security.private
     def fieldNameForIndex(self, indexName: str) -> str:
         """The name of the index may not be the same as the field on the object,
         and we need the actual field name in order to find its mutator.
@@ -226,7 +233,6 @@ class KeywordManager:
 
         return fieldName
 
-    @security.private
     def getSetter(self, obj, indexName: str):
         """Gets the setter function for the field based on the index name.
 

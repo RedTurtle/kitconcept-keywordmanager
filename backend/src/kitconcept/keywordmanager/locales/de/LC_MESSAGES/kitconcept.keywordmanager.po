@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-04-23 20:58+0000\n"
+"POT-Creation-Date: 2026-09-29 11:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,26 +14,46 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
+#: kitconcept/keywordmanager/controlpanel.py:33
+msgid "Always reindex"
+msgstr "Immer reindizieren"
+
 #: kitconcept/keywordmanager/profiles.zcml:13
 msgid "Change, merge and delete keywords (subjects) in Plone."
-msgstr ""
+msgstr "Stichwörter (subjects) in Plone ändern, zusammenführen und löschen."
 
 #: kitconcept/keywordmanager/profiles.zcml:22
 msgid "Create example content to showcase this addon."
+msgstr "Beispielinhalte erstellen, um dieses Add-on zu demonstrieren."
+
+#: kitconcept/keywordmanager/controlpanel.py:13
+msgid "Ignore indexes"
+msgstr "Indizes ignorieren"
+
+#: kitconcept/keywordmanager/controlpanel.py:14
+msgid "Indexes of type 'KeywordIndex' that the Keyword Manager shouldn't be able to manage. These are disallowed intentionally, since managing them could cause problems. Provide the values as a comma-separated string, e.g. \"block_types, object_provides\"."
 msgstr ""
+
+#: kitconcept/keywordmanager/controlpanel.py:34
+msgid "Indexes that should always be reindexed when merging or deleting keywords on objects. Most users won't need to configure this. Provide the values as a comma-separated string, e.g. \"block_types, object_provides\"."
+msgstr ""
+
+#: kitconcept/keywordmanager/controlpanel.py:49
+msgid "Keyword Manager Settings"
+msgstr "Keyword Manager Einstellungen"
 
 #: kitconcept/keywordmanager/profiles.zcml:22
 msgid "Keyword Manager: Example content"
-msgstr ""
+msgstr "Keyword Manager: Beispielinhalt"
 
 #: kitconcept/keywordmanager/profiles.zcml:13
 msgid "Keyword Manager: Install"
-msgstr ""
+msgstr "Keyword Manager: Installieren"
 
 #: kitconcept/keywordmanager/profiles.zcml:30
 msgid "Keyword Manager: Uninstall"
-msgstr ""
+msgstr "Keyword Manager: Deinstallieren"
 
 #: kitconcept/keywordmanager/profiles.zcml:30
 msgid "Uninstall Keyword Manager setup."
-msgstr ""
+msgstr "Keyword Manager Setup deinstallieren."
